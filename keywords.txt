@@ -1,0 +1,37 @@
+#######################################
+# Syntax Coloring Map For Test
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+SonMicroReader	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+sendCommand	KEYWORD2
+getCommand	KEYWORD2
+getPacketLength	KEYWORD2
+getCheckSum	KEYWORD2
+getPayload	KEYWORD2
+getString	KEYWORD2
+getTagNumber	KEYWORD2
+getTagType	KEYWORD2
+getErrorCode	KEYWORD2
+getAntennaPower	KEYWORD2
+reset	KEYWORD2
+getFirmwareVersion	KEYWORD2
+seekTag	KEYWORD2
+selectTag	KEYWORD2
+authenticate	KEYWORD2
+readBlock	KEYWORD2
+writeBlock	KEYWORD2
+writeFourByteBlock	KEYWORD2
+setAntennaPower	KEYWORD2
+sleep	KEYWORD2
+setBaudRate	KEYWORD2
+
