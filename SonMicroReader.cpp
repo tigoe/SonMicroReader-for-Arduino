@@ -32,6 +32,7 @@ SonMicroReader::SonMicroReader()
 	errorCode = 0;             		// error code from some commands
 	antennaPower = 1;          		// antenna power level
 	version = "";
+	payloadString.reserve(BLOCK_SIZE);
 }
 
 
@@ -500,6 +501,15 @@ boolean SonMicroReader::authenticate(int thisBlock, int authentication, int this
 	 else if (responseBuffer[2] == 0x46) {
 	 	return 0;
 	 }
+	 
+	 payloadString = "";
+	for(int i=0; i < 16; i++) {
+		char thisChar = payload[i];
+		if (thisChar !=0) {
+			payloadString += thisChar;      
+		}
+	}
+	
 	 return count;
  }
  
@@ -507,16 +517,9 @@ boolean SonMicroReader::authenticate(int thisBlock, int authentication, int this
 //	returns the read block as a String
 //
 
-String SonMicroReader::getString()
+String& SonMicroReader::getString()
 {
-	String result;
-	for(int i=0; i < 16; i++) {
-		char thisChar = payload[i];
-		if (thisChar !=0) {
-			result += thisChar;      
-		}
-	}
-	return result;
+	return payloadString;
 }
 
 // Write block.  Not implemented yet.  Still need to 
