@@ -55,7 +55,7 @@ class SonMicroReader
 	int getPacketLength();				// the length of the last packet received
 	int getCheckSum();					// the checksum of the last packet received
 	char* getPayload() {return payload;};	// the payload of the last packet
-	String getString();						// the payload as a String
+	String& getString();						// the payload as a String
 	unsigned long getTagNumber();			// the last tag number read
 	int getTagType();						// the last tag type (see SM130 datasheet sec. 5.3)
 	int getErrorCode();						// the error code last returned (see datasheet)
@@ -85,6 +85,7 @@ private:
 	 int antennaPower;          		// antenna power level
 	 byte responseBuffer[BUFFER_SIZE];	// To hold the last response from the reader
 	 char payload[BLOCK_SIZE];			// payload for read and write blocks		
+	 String payloadString;				// String version of the payload
 		
 	int getData();						// waits for response from the reader
 	void clearBuffer();					// clears response buffer
