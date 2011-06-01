@@ -40,6 +40,7 @@ void SonMicroReader::begin(void)
 {
   Wire.begin();
   reset();
+  delay(2000);
 }
 
 
