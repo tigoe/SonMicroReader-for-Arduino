@@ -683,29 +683,81 @@ void SonMicroReader::printBuffer(int count)
 }
 
 
-String SonMicroReader::getNDEFpayload(int startBlock) {
+String SonMicroReader::getNDEFpayload(int startBlock, int authentication, int* thisKey) {
 
   int length = 0;
   String thisString = "";
 
   int startByte = 0;
-  for (int i = 0; i < 3; i++) { // Check all three blocks
-    if (readBlock(startBlock + i) == 24) {
-      if (i == 0) {
-        length = responseBuffer[9];
-        startByte = 12;  // offset of payload in first block response
-      } 
-      else {
-        startByte = 3;  // ofset of payload in next 2 block responses
-      }
-
-      for (int j = startByte; j < 19; j++) {
-        if (--length > 0) { // Keep adding characters until we reach the length.
-          thisString += (char) responseBuffer[j];
+  int currentBlock = startBlock;
+  if (!authenticate(currentBlock, authentication, thisKey)) {
+    thisString = "Error: could not authenticate against block ";
+    thisString += int(currentBlock);
+    return thisString;
+  }
+    
+  // Read the first block and figure out what kind of payload we have.
+  int readSize = readBlock(currentBlock);
+  if (readSize != 24) {
+    
+    thisString = "Error: expected 24 bytes, got: ";
+    thisString += (int) readSize;
+    return thisString;
+    
+  } else {
+    
+    switch (responseBuffer[10]) {
+      case 0x55: // URI data type
+        startByte = 12;  // offset of payload in first block response   
+        length = responseBuffer[9];   
+        break;
+      
+      case 0x54: // text data type
+        if (responseBuffer[11] == 0x02) { // UTF-8 + two-byte language code
+          startByte = 14; // 12 + 2 bytes for language code
+          length = responseBuffer[9] - 2;
+        } else {
+          thisString = "Error: unsupported character set: ";
+          thisString += (int) responseBuffer[11];
+          return thisString;
         }
-      }
-
+        break;
+      
+      default:
+        thisString = "Error: unknown record type: ";
+        thisString += (int) responseBuffer[10];
+        return thisString;
     }
+  }
+  
+  // Read in each block and pull out the payload.
+  //
+  while(length > 0) {
+      
+    for (int j = startByte; j < 19; j++) {
+      if (--length > 0) { // Keep adding characters until we reach the length.
+        thisString += (char) responseBuffer[j];
+      }
+    }
+    
+    // Move on to the next block
+    currentBlock++;
+    if ((currentBlock + 1) % 4 == 0) { // Skip security blocks
+      currentBlock++;
+        
+      // If we cross a sector boundary, we need to authenticate
+      // against its first block.
+      //
+      if (!authenticate(currentBlock, authentication, thisKey)) {
+        thisString = "Error: could not authenticate against sector: ";
+        thisString += (int) currentBlock;
+        return thisString;
+      }
+    }
+    
+    // Read the block.
+    readBlock(currentBlock);
+    startByte = 3;  // offset of payload in next subsequent block responses
   }
   return thisString;
 }

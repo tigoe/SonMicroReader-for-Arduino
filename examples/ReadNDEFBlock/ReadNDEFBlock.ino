@@ -43,19 +43,17 @@ void loop() {
     // attempt to authenticate block 4:
     int key[6] = { 
       0xFF,0xFF,0xFF,0xFF,0xFF,0xFF    };
-    if(Rfid.authenticate(payloadBlock, 0xBB, key)) {
-      Serial.println("authenticated successfully");
-      // Read the payload contained in this sector.
-      String payload = Rfid.getNDEFpayload(payloadBlock);
-      if (payload.length() > 0) {
-        // Return the payload to the client
-        Serial.print(payload); 
-
-
-      }
-      // print a final newline:
-      Serial.println();
+    int authmode = 0xBB;
+    
+    Serial.println("authenticated successfully");
+    // Read the payload contained in this sector.
+    String payload = Rfid.getNDEFpayload(payloadBlock, authmode, key);
+    if (payload.length() > 0) {
+      // Return the payload to the client
+      Serial.print(payload); 
     }
+    // print a final newline:
+    Serial.println();
   }
 }
 

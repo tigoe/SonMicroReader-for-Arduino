@@ -73,7 +73,7 @@ class SonMicroReader
 	void setAntennaPower(int level);		// sets antenna power
 	void sleep();							// puts unit to sleep
 	void setBaudRate(int baudRate);			// sets serial baud rate
-	String getNDEFpayload(int startBlock);	// returns NDEF payload
+	String getNDEFpayload(int startBlock, int authentication, int* thisKey);	// returns NDEF payload
 	
 private:
 	 int command;               		// received command, from the packet    
