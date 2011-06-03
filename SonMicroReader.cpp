@@ -503,14 +503,7 @@ boolean SonMicroReader::authenticate(int thisBlock, int authentication, int this
 	 	return 0;
 	 }
 	 
-	 payloadString = "";
-	for(int i=0; i < 16; i++) {
-		char thisChar = payload[i];
-		if (thisChar !=0) {
-			payloadString += thisChar;      
-		}
-	}
-	
+		
 	 return count;
  }
  
@@ -520,6 +513,14 @@ boolean SonMicroReader::authenticate(int thisBlock, int authentication, int this
 
 String& SonMicroReader::getString()
 {
+	 payloadString = "";
+	for(int i=0; i < 16; i++) {
+		char thisChar = payload[i];
+		if (thisChar !=0) {
+			payloadString += thisChar;      
+		}
+	}
+
 	return payloadString;
 }
 
@@ -683,6 +684,33 @@ void SonMicroReader::printBuffer(int count)
 }
 
 
+String SonMicroReader::getNDEFpayload(int startBlock) {
+
+  int length = 0;
+  String thisString = "";
+
+  int startByte = 0;
+  for (int i = 0; i < 3; i++) { // Check all three blocks
+
+    if (readBlock(startBlock + i) == 20) {
+      if (i == 0) {
+        length = responseBuffer[9];
+        startByte = 12;  // offset of payload in first block response
+      } 
+      else {
+        startByte = 3;  // ofset of payload in next 2 block responses
+      }
+
+      for (int j = startByte; j < 19; j++) {
+        if (--length > 0) { // Keep adding characters until we reach the length.
+          thisString += (char) responseBuffer[j];
+        }
+      }
+
+    }
+  }
+  return thisString;
+}
 
 
 
