@@ -66,7 +66,7 @@ class SonMicroReader
 	unsigned long selectTag();				// starts a select command
 	boolean authenticate(int thisBlock);						// authenticates using default auth
 	boolean authenticate(int thisBlock, int authentication);	// authenticates using default key	
-	boolean authenticate(int thisBlock, int authentication, int thisKey[]);	// custom auth
+	boolean authenticate(int thisBlock, int authentication, int* thisKey);	// custom auth
 	int readBlock(int block);								// reads a block  (must auth first)
 	void writeBlock(int thisBlock, String thisMessage);		// writes a block (must auth first)
 	void writeFourByteBlock(int thisBlock, String thisMessage);	// writes 4-byte block (must auth first)

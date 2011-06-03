@@ -1,5 +1,7 @@
 /*
- RFID Read Block
+ RFID Read NDEF Block
+ 
+ BRIAN REWRITE THIS
  
  Reads block 4 of memory from a Mifare RFID tag
  using a SonMicro SM130 RFID reader.
@@ -39,23 +41,23 @@ void loop() {
     Serial.print("Read a tag: ");
     Serial.println(tag, HEX);
     // attempt to authenticate block 4:
-    int key[] = { 0xFF,  0xFF, 0xFF,0xFF, 0xFF, 0xFF};
+    int key[6] = { 
+      0xFF,0xFF,0xFF,0xFF,0xFF,0xFF    };
     if(Rfid.authenticate(payloadBlock, 0xBB, key)) {
       Serial.println("authenticated successfully");
-      // read the block:
-     // Read the payload contained in this sector.
-    String payload = Rfid.getNDEFpayload(payloadBlock);
-    if (payload.length() > 0) {
-      // Return the payload to the client
-      Serial.print('U');
-      Serial.print(payload); 
-      
-  
+      // Read the payload contained in this sector.
+      String payload = Rfid.getNDEFpayload(payloadBlock);
+      if (payload.length() > 0) {
+        // Return the payload to the client
+        Serial.print(payload); 
+
+
       }
       // print a final newline:
       Serial.println();
     }
   }
 }
+
 
 

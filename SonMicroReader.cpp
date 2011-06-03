@@ -449,17 +449,16 @@ boolean SonMicroReader::authenticate(int thisBlock, int authentication)
    return authenticate(thisBlock, authentication, key);
 }
 
-boolean SonMicroReader::authenticate(int thisBlock, int authentication, int thisKey[]) 
+boolean SonMicroReader::authenticate(int thisBlock, int authentication, int* thisKey) 
 {
-  int length = (sizeof(thisKey)/sizeof(int)) + 3;
+  int length = 9;
   int command[length];
   command[0] = SM13X_AUTHENTICATE,  // authenticate
   command[1] = thisBlock;
   command[2] = authentication;
-  if (length > 4) {
-	  for (int i=0; i<length-3; i++) {
-	    command[i+3] = thisKey[i];
-	  }
+  
+  for (int i=0; i<length-3; i++) {
+    command[i+3] = thisKey[i];
   }
   // send the command:
   sendCommand(command, length);
@@ -691,8 +690,7 @@ String SonMicroReader::getNDEFpayload(int startBlock) {
 
   int startByte = 0;
   for (int i = 0; i < 3; i++) { // Check all three blocks
-
-    if (readBlock(startBlock + i) == 20) {
+    if (readBlock(startBlock + i) == 24) {
       if (i == 0) {
         length = responseBuffer[9];
         startByte = 12;  // offset of payload in first block response
