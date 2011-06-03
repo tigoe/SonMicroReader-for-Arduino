@@ -10,6 +10,8 @@ published by the Free Software Foundation.
 
  
   Original library								(0.1) 
+  Version for Arduino 0022, with NDEF			(0.2)	NDEF by Brian Jepson
+  Version for Arduino 1.0b1, with NDEF			(0.3)	NDEF by Brian Jepson
 
   Controls a SM130 RFID reader
 
@@ -20,7 +22,7 @@ published by the Free Software Foundation.
 #define SonMicroReader_h
 
 // include types & constants of core API (for Arduino after 0022)
-#include "Arduino.h"
+#include "WProgram.h"
 #include "Wire.h"
 
 #define BUFFER_SIZE 24

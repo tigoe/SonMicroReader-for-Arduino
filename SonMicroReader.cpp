@@ -10,6 +10,8 @@ published by the Free Software Foundation.
 
  
   Original library								(0.1) 
+  Version for Arduino 0022, with NDEF			(0.2)	NDEF by Brian Jepson
+  Version for Arduino 1.0b1, with NDEF			(0.3)	NDEF by Brian Jepson
 
   Controls a SM130 RFID reader
 
@@ -32,7 +34,7 @@ SonMicroReader::SonMicroReader()
 	errorCode = 0;             		// error code from some commands
 	antennaPower = 1;          		// antenna power level
 	version = "";
-	payloadString.reserve(BLOCK_SIZE);
+	//payloadString.reserve(BLOCK_SIZE);
 }
 
 
@@ -66,7 +68,7 @@ int SonMicroReader::getData()
   // while data is coming from the reader,
   // add it to the response buffer:
   while(Wire.available())  {     
-    responseBuffer[count] = Wire.read();  
+    responseBuffer[count] = Wire.receive();  
     count++;
   }  
   // put a 0 in the last byte after the response:
@@ -292,17 +294,17 @@ void SonMicroReader::sendCommand(int command[], int length)
 {
   Wire.beginTransmission(0x42); 
   int checksum = length;       // Starting value for the checksum.
-  Wire.write(length);          // send the length
+  Wire.send(length);          // send the length
 
     for (int i = 0; i < length; i++) {
     checksum += command[i];    // Add each byte to the checksum
-    Wire.write(command[i]);    // send the byte
+    Wire.send(command[i]);    // send the byte
   }
 
   // checksum is the low byte of the sum of 
   // the other bytes:
   checksum = checksum % 256; 
-  Wire.write(checksum);        // send the checksum
+  Wire.send(checksum);        // send the checksum
   Wire.endTransmission();      // end the I2C connection
 
     // you just sent a new command, so there's no new data available:
