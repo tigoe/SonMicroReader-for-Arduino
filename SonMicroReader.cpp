@@ -99,6 +99,7 @@ int SonMicroReader::getData()
        // if you got a good payload, it's the version number
     // add the response to the string:
     if (packetLength > 2) {
+ 	version = ""; // clear the version string
       int i = 2;
       while (isPrintable(responseBuffer[i])) {
         version += (char)responseBuffer[i];
